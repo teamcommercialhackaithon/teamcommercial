@@ -1,0 +1,114 @@
+<div class="message-container">
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <!-- Action Bar -->
+  <div class="action-bar" *ngIf="!isCreating && !isEditing">
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label>Filter by Type:</label>
+        <select [(ngModel)]="filterType" class="filter-select">
+          <option value="all">All Types</option>
+          <option *ngFor="let type of getUniqueTypes()" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+      <div class="search-group">
+        <label>Search:</label>
+        <input type="text" [(ngModel)]="searchText" placeholder="Search messages..." class="search-input">
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Message</button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="isCreating" class="form-card">
+    <h2>Create New Message</h2>
+    <form (ngSubmit)="createMessage()">
+      <div class="form-group">
+        <label>Message Type</label>
+        <select [(ngModel)]="newMessage.messageType" name="messageType">
+          <option value="">Select Type...</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="ERROR">ERROR</option>
+          <option value="SUCCESS">SUCCESS</option>
+          <option value="NOTIFICATION">NOTIFICATION</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Message Text *</label>
+        <textarea [(ngModel)]="newMessage.messageText" name="messageText" rows="5" required 
+                  placeholder="Enter your message text here..."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Message</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="isEditing && selectedMessage" class="form-card">
+    <h2>Edit Message</h2>
+    <form (ngSubmit)="updateMessage()">
+      <div class="form-group">
+        <label>Message Type</label>
+        <select [(ngModel)]="selectedMessage.messageType" name="messageType">
+          <option value="">Select Type...</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="ERROR">ERROR</option>
+          <option value="SUCCESS">SUCCESS</option>
+          <option value="NOTIFICATION">NOTIFICATION</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Message Text *</label>
+        <textarea [(ngModel)]="selectedMessage.messageText" name="messageText" rows="5" required 
+                  placeholder="Enter your message text here..."></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Message</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading messages...</div>
+
+  <!-- Messages List -->
+  <div *ngIf="!loading && !isCreating && !isEditing" class="messages-grid">
+    <div *ngFor="let message of getFilteredMessages()" class="card message-card">
+      <div class="message-header">
+        <span *ngIf="message.messageType" class="type-badge" [class]="'type-' + message.messageType?.toLowerCase()">
+          {{ message.messageType }}
+        </span>
+        <span class="message-date">{{ message.createdAt | date:'short' }}</span>
+      </div>
+
+      <div class="message-body">
+        <p class="message-text">{{ message.messageText }}</p>
+      </div>
+
+      <div class="message-footer">
+        <span class="message-id">ID: {{ message.messageId }}</span>
+        <div class="card-actions">
+          <button class="btn btn-primary btn-sm" (click)="editMessage(message)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteMessage(message.messageId)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isCreating && !isEditing && getFilteredMessages().length === 0" class="empty-state">
+    <p>No messages found. Create your first message!</p>
+  </div>
+</div>
+

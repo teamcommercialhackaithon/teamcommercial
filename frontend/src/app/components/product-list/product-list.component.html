@@ -1,0 +1,89 @@
+<div class="product-container">
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <!-- Create Button -->
+  <div class="action-bar" *ngIf="!isCreating && !isEditing">
+    <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Product</button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="isCreating" class="form-card">
+    <h2>Create New Product</h2>
+    <form (ngSubmit)="createProduct()">
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" [(ngModel)]="newProduct.name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="newProduct.description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Price *</label>
+        <input type="number" [(ngModel)]="newProduct.price" name="price" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Quantity *</label>
+        <input type="number" [(ngModel)]="newProduct.quantity" name="quantity" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Product</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="isEditing && selectedProduct" class="form-card">
+    <h2>Edit Product</h2>
+    <form (ngSubmit)="updateProduct()">
+      <div class="form-group">
+        <label>Product Name *</label>
+        <input type="text" [(ngModel)]="selectedProduct.name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="selectedProduct.description" name="description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Price *</label>
+        <input type="number" [(ngModel)]="selectedProduct.price" name="price" step="0.01" required>
+      </div>
+      <div class="form-group">
+        <label>Quantity *</label>
+        <input type="number" [(ngModel)]="selectedProduct.quantity" name="quantity" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Product</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading products...</div>
+
+  <!-- Products List -->
+  <div *ngIf="!loading && !isCreating && !isEditing" class="products-grid">
+    <div *ngFor="let product of products" class="card product-card">
+      <h3>{{ product.name }}</h3>
+      <p class="description">{{ product.description }}</p>
+      <div class="product-details">
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Quantity:</strong> {{ product.quantity }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary btn-sm" (click)="editProduct(product)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isCreating && !isEditing && products.length === 0" class="empty-state">
+    <p>No products found. Create your first product!</p>
+  </div>
+</div>
+

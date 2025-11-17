@@ -1,0 +1,207 @@
+<div class="notification-container">
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <!-- Action Bar -->
+  <div class="action-bar" *ngIf="!isCreating && !isEditing">
+    <div class="filter-group">
+      <label>Filter:</label>
+      <select [(ngModel)]="filterStatus" class="filter-select">
+        <option value="all">All Notifications</option>
+        <option value="notified">Notified</option>
+        <option value="unnotified">Not Notified</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Notification</button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="isCreating" class="form-card">
+    <h2>Create New Notification</h2>
+    <form (ngSubmit)="createNotification()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer ID *</label>
+          <input type="text" [(ngModel)]="newNotification.customerId" name="customerId" required>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select [(ngModel)]="newNotification.type" name="type">
+            <option value="">Select Type...</option>
+            <option value="Email">Email</option>
+            <option value="SMS">SMS</option>
+            <option value="Push">Push Notification</option>
+            <option value="Alert">Alert</option>
+            <option value="Warning">Warning</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Device Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>MAC Address</label>
+          <input type="text" [(ngModel)]="newNotification.macAddress" name="macAddress" placeholder="00:00:00:00:00:00">
+        </div>
+        <div class="form-group">
+          <label>IP Address</label>
+          <input type="text" [(ngModel)]="newNotification.ipAddress" name="ipAddress" placeholder="192.168.1.1">
+        </div>
+        <div class="form-group">
+          <label>Serial</label>
+          <input type="text" [(ngModel)]="newNotification.serial" name="serial">
+        </div>
+      </div>
+
+      <div class="form-section-title">Date Range</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date *</label>
+          <input type="date" [(ngModel)]="newNotification.startDate" name="startDate" required>
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" [(ngModel)]="newNotification.endDate" name="endDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="newNotification.notified" name="notified">
+            Mark as Notified
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Notification</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="isEditing && selectedNotification" class="form-card">
+    <h2>Edit Notification</h2>
+    <form (ngSubmit)="updateNotification()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer ID *</label>
+          <input type="text" [(ngModel)]="selectedNotification.customerId" name="customerId" required>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select [(ngModel)]="selectedNotification.type" name="type">
+            <option value="">Select Type...</option>
+            <option value="Email">Email</option>
+            <option value="SMS">SMS</option>
+            <option value="Push">Push Notification</option>
+            <option value="Alert">Alert</option>
+            <option value="Warning">Warning</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section-title">Device Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>MAC Address</label>
+          <input type="text" [(ngModel)]="selectedNotification.macAddress" name="macAddress" placeholder="00:00:00:00:00:00">
+        </div>
+        <div class="form-group">
+          <label>IP Address</label>
+          <input type="text" [(ngModel)]="selectedNotification.ipAddress" name="ipAddress" placeholder="192.168.1.1">
+        </div>
+        <div class="form-group">
+          <label>Serial</label>
+          <input type="text" [(ngModel)]="selectedNotification.serial" name="serial">
+        </div>
+      </div>
+
+      <div class="form-section-title">Date Range</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Start Date *</label>
+          <input type="date" [(ngModel)]="selectedNotification.startDate" name="startDate" required>
+        </div>
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" [(ngModel)]="selectedNotification.endDate" name="endDate">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" [(ngModel)]="selectedNotification.notified" name="notified">
+            Mark as Notified
+          </label>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Notification</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading notifications...</div>
+
+  <!-- Notifications List -->
+  <div *ngIf="!loading && !isCreating && !isEditing" class="notifications-grid">
+    <div *ngFor="let notification of getFilteredNotifications()" 
+         class="card notification-card"
+         [class.expired]="isExpired(notification)"
+         [class.notified]="notification.notified">
+      <div class="notification-header">
+        <h3>{{ notification.customerId }}</h3>
+        <div class="status-badges">
+          <span class="badge" [class.badge-success]="notification.notified" [class.badge-warning]="!notification.notified">
+            {{ notification.notified ? 'Notified' : 'Pending' }}
+          </span>
+          <span *ngIf="isExpired(notification)" class="badge badge-danger">Expired</span>
+        </div>
+      </div>
+
+      <div class="notification-details">
+        <p *ngIf="notification.type" class="notification-type">
+          <strong>Type:</strong> <span class="type-tag">{{ notification.type }}</span>
+        </p>
+
+        <div *ngIf="notification.macAddress || notification.ipAddress || notification.serial" class="section">
+          <strong>Device Info:</strong>
+          <p *ngIf="notification.macAddress"><span class="label">MAC:</span> {{ notification.macAddress }}</p>
+          <p *ngIf="notification.ipAddress"><span class="label">IP:</span> {{ notification.ipAddress }}</p>
+          <p *ngIf="notification.serial"><span class="label">Serial:</span> {{ notification.serial }}</p>
+        </div>
+
+        <div class="section date-section">
+          <strong>Date Range:</strong>
+          <p><span class="label">Start:</span> {{ notification.startDate | date:'mediumDate' }}</p>
+          <p *ngIf="notification.endDate"><span class="label">End:</span> {{ notification.endDate | date:'mediumDate' }}</p>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-toggle btn-sm" 
+                [class.btn-success]="!notification.notified"
+                [class.btn-warning]="notification.notified"
+                (click)="toggleNotified(notification)">
+          {{ notification.notified ? 'Mark Unnotified' : 'Mark Notified' }}
+        </button>
+        <button class="btn btn-primary btn-sm" (click)="editNotification(notification)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="deleteNotification(notification.notificationId)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isCreating && !isEditing && getFilteredNotifications().length === 0" class="empty-state">
+    <p>No notifications found. Create your first notification!</p>
+  </div>
+</div>
+

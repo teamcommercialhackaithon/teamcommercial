@@ -1,0 +1,219 @@
+<div class="customer-container">
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <!-- Create Button -->
+  <div class="action-bar" *ngIf="!isCreating && !isEditing">
+    <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Customer</button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="isCreating" class="form-card">
+    <h2>Create New Customer</h2>
+    <form (ngSubmit)="createCustomer()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer Name *</label>
+          <input type="text" [(ngModel)]="newCustomer.customerName" name="customerName" required>
+        </div>
+        <div class="form-group">
+          <label>Customer ID *</label>
+          <input type="number" [(ngModel)]="newCustomer.customerId" name="customerId" required>
+        </div>
+      </div>
+
+      <div class="form-section-title">Address Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Street Number</label>
+          <input type="text" [(ngModel)]="newCustomer.streetNumber" name="streetNumber">
+        </div>
+        <div class="form-group">
+          <label>Street Name</label>
+          <input type="text" [(ngModel)]="newCustomer.streetName" name="streetName">
+        </div>
+        <div class="form-group">
+          <label>Unit Number</label>
+          <input type="text" [(ngModel)]="newCustomer.unitNumber" name="unitNumber">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" [(ngModel)]="newCustomer.city" name="city">
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" [(ngModel)]="newCustomer.state" name="state">
+        </div>
+        <div class="form-group">
+          <label>Post Code</label>
+          <input type="text" [(ngModel)]="newCustomer.postCode" name="postCode">
+        </div>
+      </div>
+
+      <div class="form-section-title">Contact Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email ID</label>
+          <input type="email" [(ngModel)]="newCustomer.emailId" name="emailId">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" [(ngModel)]="newCustomer.mobileNumber" name="mobileNumber">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Communication Preference</label>
+          <select [(ngModel)]="newCustomer.communicationPreference" name="communicationPreference">
+            <option value="">Select...</option>
+            <option value="Email">Email</option>
+            <option value="SMS">SMS</option>
+            <option value="Phone">Phone</option>
+            <option value="Mail">Mail</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serial</label>
+          <input type="text" [(ngModel)]="newCustomer.serial" name="serial">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Customer</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="isEditing && selectedCustomer" class="form-card">
+    <h2>Edit Customer</h2>
+    <form (ngSubmit)="updateCustomer()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Customer Name *</label>
+          <input type="text" [(ngModel)]="selectedCustomer.customerName" name="customerName" required>
+        </div>
+        <div class="form-group">
+          <label>Customer ID *</label>
+          <input type="number" [(ngModel)]="selectedCustomer.customerId" name="customerId" required>
+        </div>
+      </div>
+
+      <div class="form-section-title">Address Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Street Number</label>
+          <input type="text" [(ngModel)]="selectedCustomer.streetNumber" name="streetNumber">
+        </div>
+        <div class="form-group">
+          <label>Street Name</label>
+          <input type="text" [(ngModel)]="selectedCustomer.streetName" name="streetName">
+        </div>
+        <div class="form-group">
+          <label>Unit Number</label>
+          <input type="text" [(ngModel)]="selectedCustomer.unitNumber" name="unitNumber">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" [(ngModel)]="selectedCustomer.city" name="city">
+        </div>
+        <div class="form-group">
+          <label>State</label>
+          <input type="text" [(ngModel)]="selectedCustomer.state" name="state">
+        </div>
+        <div class="form-group">
+          <label>Post Code</label>
+          <input type="text" [(ngModel)]="selectedCustomer.postCode" name="postCode">
+        </div>
+      </div>
+
+      <div class="form-section-title">Contact Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Email ID</label>
+          <input type="email" [(ngModel)]="selectedCustomer.emailId" name="emailId">
+        </div>
+        <div class="form-group">
+          <label>Mobile Number</label>
+          <input type="tel" [(ngModel)]="selectedCustomer.mobileNumber" name="mobileNumber">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Communication Preference</label>
+          <select [(ngModel)]="selectedCustomer.communicationPreference" name="communicationPreference">
+            <option value="">Select...</option>
+            <option value="Email">Email</option>
+            <option value="SMS">SMS</option>
+            <option value="Phone">Phone</option>
+            <option value="Mail">Mail</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Serial</label>
+          <input type="text" [(ngModel)]="selectedCustomer.serial" name="serial">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Customer</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading customers...</div>
+
+  <!-- Customers List -->
+  <div *ngIf="!loading && !isCreating && !isEditing" class="customers-grid">
+    <div *ngFor="let customer of customers" class="card customer-card">
+      <h3>{{ customer.customerName }}</h3>
+      <div class="customer-details">
+        <p *ngIf="customer.customerId"><strong>Customer ID:</strong> {{ customer.customerId }}</p>
+        
+        <div *ngIf="customer.streetNumber || customer.streetName || customer.city" class="section">
+          <strong>Address:</strong>
+          <p>
+            <span *ngIf="customer.unitNumber">Unit {{ customer.unitNumber }}, </span>
+            <span *ngIf="customer.streetNumber">{{ customer.streetNumber }} </span>
+            <span *ngIf="customer.streetName">{{ customer.streetName }}</span>
+          </p>
+          <p>
+            <span *ngIf="customer.city">{{ customer.city }}<span *ngIf="customer.state">, </span></span>
+            <span *ngIf="customer.state">{{ customer.state }} </span>
+            <span *ngIf="customer.postCode">{{ customer.postCode }}</span>
+          </p>
+        </div>
+
+        <div *ngIf="customer.emailId || customer.mobileNumber" class="section">
+          <p *ngIf="customer.emailId"><strong>Email:</strong> {{ customer.emailId }}</p>
+          <p *ngIf="customer.mobileNumber"><strong>Mobile:</strong> {{ customer.mobileNumber }}</p>
+        </div>
+
+        <p *ngIf="customer.communicationPreference"><strong>Preference:</strong> {{ customer.communicationPreference }}</p>
+        <p *ngIf="customer.serial"><strong>Serial:</strong> {{ customer.serial }}</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-primary btn-sm" (click)="editCustomer(customer)">Edit</button>
+        <button class="btn btn-danger btn-sm" (click)="deleteCustomer(customer.customerId)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isCreating && !isEditing && customers.length === 0" class="empty-state">
+    <p>No customers found. Create your first customer!</p>
+  </div>
+</div>
+

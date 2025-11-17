@@ -1,0 +1,174 @@
+<div class="config-container">
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <!-- Action Bar -->
+  <div class="action-bar" *ngIf="!isCreating && !isEditing">
+    <h2>Configuration Settings</h2>
+    <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Configuration</button>
+  </div>
+
+  <!-- Create Form -->
+  <div *ngIf="isCreating" class="form-card">
+    <h2>Create New Configuration</h2>
+    <form (ngSubmit)="createConfig()">
+      <div class="form-group">
+        <label>Wait Time (seconds)</label>
+        <input type="number" [(ngModel)]="newConfig.waitTime" name="waitTime" min="0">
+      </div>
+
+      <div class="form-section-title">Notification Settings</div>
+      
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="newConfig.enableFullOutageNotification" name="enableFullOutageNotification">
+          <span class="checkbox-text">
+            <strong>Enable Full Outage Notification</strong>
+            <small>Notify when a complete system outage occurs</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="newConfig.partialOutageNotification" name="partialOutageNotification">
+          <span class="checkbox-text">
+            <strong>Partial Outage Notification</strong>
+            <small>Notify when partial system services are affected</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="newConfig.startStopNotification" name="startStopNotification">
+          <span class="checkbox-text">
+            <strong>Start/Stop Notification</strong>
+            <small>Notify when services start or stop</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Create Configuration</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Edit Form -->
+  <div *ngIf="isEditing && selectedConfig" class="form-card">
+    <h2>Edit Configuration</h2>
+    <form (ngSubmit)="updateConfig()">
+      <div class="form-group">
+        <label>Wait Time (seconds)</label>
+        <input type="number" [(ngModel)]="selectedConfig.waitTime" name="waitTime" min="0">
+      </div>
+
+      <div class="form-section-title">Notification Settings</div>
+      
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="selectedConfig.enableFullOutageNotification" name="enableFullOutageNotification">
+          <span class="checkbox-text">
+            <strong>Enable Full Outage Notification</strong>
+            <small>Notify when a complete system outage occurs</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="selectedConfig.partialOutageNotification" name="partialOutageNotification">
+          <span class="checkbox-text">
+            <strong>Partial Outage Notification</strong>
+            <small>Notify when partial system services are affected</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" [(ngModel)]="selectedConfig.startStopNotification" name="startStopNotification">
+          <span class="checkbox-text">
+            <strong>Start/Stop Notification</strong>
+            <small>Notify when services start or stop</small>
+          </span>
+        </label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Configuration</button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">Loading configurations...</div>
+
+  <!-- Configs List -->
+  <div *ngIf="!loading && !isCreating && !isEditing" class="configs-grid">
+    <div *ngFor="let config of configs" class="card config-card">
+      <div class="config-header">
+        <h3>Configuration #{{ config.configId }}</h3>
+        <span class="wait-time-badge">Wait: {{ config.waitTime }}s</span>
+      </div>
+
+      <div class="config-body">
+        <div class="notification-settings">
+          <div class="setting-item" [class.enabled]="config.enableFullOutageNotification">
+            <div class="setting-info">
+              <strong>Full Outage Notification</strong>
+              <small>Complete system outage alerts</small>
+            </div>
+            <button class="toggle-btn" 
+                    [class.active]="config.enableFullOutageNotification"
+                    (click)="toggleFullOutage(config)">
+              {{ config.enableFullOutageNotification ? 'ON' : 'OFF' }}
+            </button>
+          </div>
+
+          <div class="setting-item" [class.enabled]="config.partialOutageNotification">
+            <div class="setting-info">
+              <strong>Partial Outage Notification</strong>
+              <small>Partial service disruption alerts</small>
+            </div>
+            <button class="toggle-btn" 
+                    [class.active]="config.partialOutageNotification"
+                    (click)="togglePartialOutage(config)">
+              {{ config.partialOutageNotification ? 'ON' : 'OFF' }}
+            </button>
+          </div>
+
+          <div class="setting-item" [class.enabled]="config.startStopNotification">
+            <div class="setting-info">
+              <strong>Start/Stop Notification</strong>
+              <small>Service start/stop events</small>
+            </div>
+            <button class="toggle-btn" 
+                    [class.active]="config.startStopNotification"
+                    (click)="toggleStartStop(config)">
+              {{ config.startStopNotification ? 'ON' : 'OFF' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="config-footer">
+        <span class="config-date">Updated: {{ config.updatedAt | date:'short' }}</span>
+        <div class="card-actions">
+          <button class="btn btn-primary btn-sm" (click)="editConfig(config)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteConfig(config.configId)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && !isCreating && !isEditing && configs.length === 0" class="empty-state">
+    <p>No configurations found. Create your first configuration!</p>
+  </div>
+</div>
+
