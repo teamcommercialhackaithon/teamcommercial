@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DashboardService } from '../../services/dashboard.service';
@@ -14,7 +14,7 @@ Chart.register(...registerables);
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('eventsChart') eventsChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('notificationsChart') notificationsChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('eventTypeChart') eventTypeChartRef!: ElementRef<HTMLCanvasElement>;
@@ -360,6 +360,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       background: colors.background[index],
       border: colors.border[index]
     };
+  }
+
+  getEventTypeCanvasId(type: string): string {
+    return `eventType_${type.replace(/\s+/g, '_')}`;
   }
 
   ngOnDestroy(): void {

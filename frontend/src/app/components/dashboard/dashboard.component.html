@@ -91,7 +91,7 @@
       <h2>📊 Events by Type</h2>
       <div class="event-type-charts">
         <div *ngFor="let type of eventTypes" class="event-type-chart-container">
-          <canvas [id]="'eventType_' + type.replace(/\\s+/g, '_')"></canvas>
+          <canvas [id]="getEventTypeCanvasId(type)"></canvas>
         </div>
       </div>
     </div>
