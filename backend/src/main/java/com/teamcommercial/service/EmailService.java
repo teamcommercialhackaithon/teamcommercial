@@ -99,5 +99,56 @@ public class EmailService {
             // Don't throw exception for welcome email failure
         }
     }
+
+    public void sendOutageNotificationEmail(String toEmail, String customerName, String messageText, String serial, String notificationType) {
+        try {
+            System.out.println("=================================================");
+            System.out.println("Attempting to send outage notification email...");
+            System.out.println("From: " + fromEmail);
+            System.out.println("To: " + toEmail);
+            System.out.println("Serial: " + serial);
+            System.out.println("Type: " + notificationType);
+            
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(fromEmail);
+            message.setTo(toEmail);
+            
+            // Set subject based on notification type
+            String subject = notificationType.toLowerCase().contains("resolved") 
+                ? "Service Restored - Customer Active Monitoring" 
+                : "Service Alert - Customer Active Monitoring";
+            message.setSubject(subject);
+            
+            String emailBody = String.format(
+                "Hello %s,\n\n" +
+                "%s\n\n" +
+                "Device Serial: %s\n\n" +
+                "If you have any questions or concerns, please contact our support team.\n\n" +
+                "Best regards,\n" +
+                "Customer Active Monitoring Team",
+                customerName, messageText, serial
+            );
+            
+            message.setText(emailBody);
+            
+            System.out.println("Sending outage notification email through SMTP...");
+            mailSender.send(message);
+            
+            System.out.println("✓ Outage notification email sent successfully to: " + toEmail);
+            System.out.println("=================================================");
+        } catch (Exception e) {
+            System.err.println("=================================================");
+            System.err.println("✗ Failed to send outage notification email to: " + toEmail);
+            System.err.println("Error type: " + e.getClass().getName());
+            System.err.println("Error message: " + e.getMessage());
+            if (e.getCause() != null) {
+                System.err.println("Cause: " + e.getCause().getMessage());
+            }
+            e.printStackTrace();
+            System.err.println("=================================================");
+            
+            // Don't throw exception - allow notification to continue
+        }
+    }
 }
 

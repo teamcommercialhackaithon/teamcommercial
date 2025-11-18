@@ -21,8 +21,14 @@
     <form (ngSubmit)="createEvent()">
       <div class="form-row">
         <div class="form-group">
-          <label>Type</label>
-          <input type="text" [(ngModel)]="newEvent.type" name="type" placeholder="e.g., INFO, WARNING, ERROR">
+          <label>Type *</label>
+          <select [(ngModel)]="newEvent.type" name="type" required class="form-select">
+            <option value="">Select Type</option>
+            <option value="wan_lost">wan_lost</option>
+            <option value="wan_disconnected">wan_disconnected</option>
+            <option value="wan_restored">wan_restored</option>
+            <option value="dhcp_renewed">dhcp_renewed</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Date & Time *</label>
@@ -49,9 +55,9 @@
       </div>
 
       <div class="form-group">
-        <label>Payload (Base64)</label>
-        <textarea [(ngModel)]="newEvent.payloadBase64" name="payloadBase64" rows="4" placeholder="Base64 encoded payload data (optional)"></textarea>
-        <small class="help-text">Paste Base64 encoded data here or leave empty</small>
+        <label>Payload (JSON String)</label>
+        <textarea [(ngModel)]="newEvent.payload" name="payload" rows="4" placeholder='{"key": "value"} (optional)'></textarea>
+        <small class="help-text">Enter JSON string or any text payload (stored as BLOB in database)</small>
       </div>
 
       <div class="form-actions">
@@ -67,8 +73,14 @@
     <form (ngSubmit)="updateEvent()">
       <div class="form-row">
         <div class="form-group">
-          <label>Type</label>
-          <input type="text" [(ngModel)]="selectedEvent.type" name="type" placeholder="e.g., INFO, WARNING, ERROR">
+          <label>Type *</label>
+          <select [(ngModel)]="selectedEvent.type" name="type" required class="form-select">
+            <option value="">Select Type</option>
+            <option value="wan_lost">wan_lost</option>
+            <option value="wan_disconnected">wan_disconnected</option>
+            <option value="wan_restored">wan_restored</option>
+            <option value="dhcp_renewed">dhcp_renewed</option>
+          </select>
         </div>
         <div class="form-group">
           <label>Date & Time *</label>
@@ -95,9 +107,9 @@
       </div>
 
       <div class="form-group">
-        <label>Payload (Base64)</label>
-        <textarea [(ngModel)]="selectedEvent.payloadBase64" name="payloadBase64" rows="4" placeholder="Base64 encoded payload data (optional)"></textarea>
-        <small class="help-text">Paste Base64 encoded data here or leave empty</small>
+        <label>Payload (JSON String)</label>
+        <textarea [(ngModel)]="selectedEvent.payload" name="payload" rows="4" placeholder='{"key": "value"} (optional)'></textarea>
+        <small class="help-text">Enter JSON string or any text payload (stored as BLOB in database)</small>
       </div>
 
       <div class="form-actions">
@@ -138,10 +150,10 @@
           </div>
         </div>
 
-        <div *ngIf="event.payloadSize && event.payloadSize > 0" class="payload-info">
+        <div *ngIf="event.payload && event.payload.length > 0" class="payload-info">
           <span class="label">Payload:</span>
-          <span class="payload-size">{{ formatFileSize(event.payloadSize) }}</span>
-          <button class="btn-link" (click)="viewPayloadDetails(event.payloadBase64)">View</button>
+          <span class="payload-size">{{ event.payload.length }} chars</span>
+          <button class="btn-link" (click)="viewPayloadDetails(event.payload)">View</button>
         </div>
       </div>
 
@@ -166,10 +178,8 @@
       </div>
       <div class="modal-body">
         <div class="payload-display">
-          <h4>Base64 Encoded:</h4>
+          <h4>Payload Content:</h4>
           <pre class="payload-code">{{ viewPayload }}</pre>
-          <h4>Decoded (if text):</h4>
-          <pre class="payload-code">{{ decodePayload(viewPayload) }}</pre>
         </div>
       </div>
       <div class="modal-footer">

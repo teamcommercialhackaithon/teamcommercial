@@ -9,26 +9,29 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "messages")
+@Table(name = "customer_devices")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class CustomerDevice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
-    private Long messageId;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "message_type")
-    private String messageType;
+    @NotBlank(message = "Customer ID is required")
+    @Column(name = "customer_id", nullable = false)
+    private String customerId;
 
-    @NotBlank(message = "Message text is required")
-    @Column(name = "message_text", nullable = false, columnDefinition = "TEXT")
-    private String messageText;
+    @Column(name = "serial")
+    private String serial;
 
-    @Column(name = "controler_device", length = 1)
-    private String controlerDevice;
+    @Column(name = "controller_device", length = 1)
+    private String controllerDevice;
+
+    @Column(name = "status")
+    private String status; // Active or Disconnected
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

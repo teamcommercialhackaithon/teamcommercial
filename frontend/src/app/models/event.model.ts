@@ -5,8 +5,7 @@ export interface Event {
   serial?: string;
   message?: string;
   date: string;
-  payloadBase64?: string;
-  payloadSize?: number;
+  payload?: string; // JSON string payload (stored as BLOB in database)
   createdAt?: string;
   updatedAt?: string;
 }

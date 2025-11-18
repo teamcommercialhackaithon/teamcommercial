@@ -28,7 +28,7 @@ export class EventListComponent implements OnInit {
     serial: '',
     message: '',
     date: '',
-    payloadBase64: ''
+    payload: ''
   };
 
   constructor(private eventService: EventService) { }
@@ -79,7 +79,7 @@ export class EventListComponent implements OnInit {
       serial: '',
       message: '',
       date: localDateTime,
-      payloadBase64: ''
+      payload: ''
     };
     this.clearMessages();
   }
@@ -145,30 +145,14 @@ export class EventListComponent implements OnInit {
     }
   }
 
-  viewPayloadDetails(payloadBase64: string | undefined): void {
-    if (payloadBase64) {
-      this.viewPayload = payloadBase64;
+  viewPayloadDetails(payload: string | undefined): void {
+    if (payload) {
+      this.viewPayload = payload;
     }
   }
 
   closePayloadView(): void {
     this.viewPayload = null;
-  }
-
-  decodePayload(base64: string): string {
-    try {
-      return atob(base64);
-    } catch (e) {
-      return 'Unable to decode payload';
-    }
-  }
-
-  formatFileSize(bytes: number | undefined): string {
-    if (!bytes || bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   }
 
   cancelEdit(): void {

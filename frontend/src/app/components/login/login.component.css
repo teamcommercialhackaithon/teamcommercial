@@ -4,14 +4,13 @@
   align-items: center;
   min-height: 80vh;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #da262d;
   margin: -20px;
 }
 
 .login-card {
   background: white;
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 450px;
   padding: 40px;

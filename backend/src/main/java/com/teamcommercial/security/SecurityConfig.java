@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/events").permitAll()  // Allow POST event creation without auth
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())

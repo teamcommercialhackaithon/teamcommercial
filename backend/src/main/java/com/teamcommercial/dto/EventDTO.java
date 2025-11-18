@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Base64;
 
 @Data
 @NoArgsConstructor
@@ -17,26 +17,23 @@ public class EventDTO {
     private String serial;
     private String message;
     private LocalDateTime date;
-    private String payloadBase64; // Base64 encoded payload for JSON transmission
-    private Integer payloadSize; // Size of payload in bytes
+    private String payload; // JSON string payload (stored as BLOB in database)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    // Helper method to convert byte[] to Base64 string
-    public void setPayloadFromBytes(byte[] payload) {
-        if (payload != null && payload.length > 0) {
-            this.payloadBase64 = Base64.getEncoder().encodeToString(payload);
-            this.payloadSize = payload.length;
+    // Helper method to convert byte[] to String
+    public void setPayloadFromBytes(byte[] payloadBytes) {
+        if (payloadBytes != null && payloadBytes.length > 0) {
+            this.payload = new String(payloadBytes, StandardCharsets.UTF_8);
         } else {
-            this.payloadBase64 = null;
-            this.payloadSize = 0;
+            this.payload = null;
         }
     }
 
-    // Helper method to convert Base64 string to byte[]
+    // Helper method to convert String to byte[]
     public byte[] getPayloadAsBytes() {
-        if (payloadBase64 != null && !payloadBase64.isEmpty()) {
-            return Base64.getDecoder().decode(payloadBase64);
+        if (payload != null && !payload.isEmpty()) {
+            return payload.getBytes(StandardCharsets.UTF_8);
         }
         return null;
     }

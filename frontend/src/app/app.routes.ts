@@ -4,6 +4,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { CustomerListComponent } from './components/customer-list/customer-list.component';
+import { CustomerDeviceListComponent } from './components/customer-device-list/customer-device-list.component';
 import { NotificationListComponent } from './components/notification-list/notification-list.component';
 import { EventListComponent } from './components/event-list/event-list.component';
 import { MessageListComponent } from './components/message-list/message-list.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'customers', component: CustomerListComponent, canActivate: [authGuard] },
+  { path: 'customer-devices', component: CustomerDeviceListComponent, canActivate: [authGuard] },
   { path: 'notifications', component: NotificationListComponent, canActivate: [authGuard] },
   { path: 'events', component: EventListComponent, canActivate: [authGuard] },
   { path: 'messages', component: MessageListComponent, canActivate: [authGuard] },

@@ -36,7 +36,6 @@ public class Event {
     @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @Lob
     @Column(name = "payload", columnDefinition = "BYTEA")
     private byte[] payload;
 

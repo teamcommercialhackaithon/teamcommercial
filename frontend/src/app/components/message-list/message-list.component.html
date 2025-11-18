@@ -29,11 +29,19 @@
         <label>Message Type</label>
         <select [(ngModel)]="newMessage.messageType" name="messageType">
           <option value="">Select Type...</option>
-          <option value="INFO">INFO</option>
-          <option value="WARNING">WARNING</option>
-          <option value="ERROR">ERROR</option>
-          <option value="SUCCESS">SUCCESS</option>
-          <option value="NOTIFICATION">NOTIFICATION</option>
+          <option value="Partial Outage">Partial Outage</option>
+          <option value="Full Outage">Full Outage</option>
+          <option value="Partial Outage Resolved">Partial Outage Resolved</option>
+          <option value="Full Outage Resolved">Full Outage Resolved</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Controller Device</label>
+        <select [(ngModel)]="newMessage.controlerDevice" name="controlerDevice">
+          <option value="">Select...</option>
+          <option value="Y">Y</option>
+          <option value="N">N</option>
         </select>
       </div>
 
@@ -58,11 +66,19 @@
         <label>Message Type</label>
         <select [(ngModel)]="selectedMessage.messageType" name="messageType">
           <option value="">Select Type...</option>
-          <option value="INFO">INFO</option>
-          <option value="WARNING">WARNING</option>
-          <option value="ERROR">ERROR</option>
-          <option value="SUCCESS">SUCCESS</option>
-          <option value="NOTIFICATION">NOTIFICATION</option>
+          <option value="Partial Outage">Partial Outage</option>
+          <option value="Full Outage">Full Outage</option>
+          <option value="Partial Outage Resolved">Partial Outage Resolved</option>
+          <option value="Full Outage Resolved">Full Outage Resolved</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Controller Device</label>
+        <select [(ngModel)]="selectedMessage.controlerDevice" name="controlerDevice">
+          <option value="">Select...</option>
+          <option value="Y">Y</option>
+          <option value="N">N</option>
         </select>
       </div>
 
@@ -94,6 +110,10 @@
 
       <div class="message-body">
         <p class="message-text">{{ message.messageText }}</p>
+        <div *ngIf="message.controlerDevice" class="message-meta">
+          <span class="meta-label">Controller Device:</span>
+          <span class="meta-value">{{ message.controlerDevice }}</span>
+        </div>
       </div>
 
       <div class="message-footer">

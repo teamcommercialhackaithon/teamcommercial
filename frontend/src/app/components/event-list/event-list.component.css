@@ -21,7 +21,7 @@
   color: #555;
 }
 
-.filter-select {
+.filter-select, .form-select {
   padding: 10px 15px;
   border: 2px solid #e0e0e0;
   border-radius: 6px;
@@ -29,9 +29,10 @@
   background-color: white;
   cursor: pointer;
   transition: border 0.3s ease;
+  width: 100%;
 }
 
-.filter-select:focus {
+.filter-select:focus, .form-select:focus {
   outline: none;
   border-color: #667eea;
 }

@@ -11,7 +11,7 @@ import { AuthResponse } from './models/user.model';
   template: `
     <div class="app-header" *ngIf="isLoggedIn">
       <div class="header-content">
-        <h1>Team Commercial</h1>
+        <h1>Customer Active Monitoring</h1>
         <div class="user-info">
           <span class="user-name">👤 {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
           <button (click)="logout()" class="btn-logout" title="Logout">
@@ -22,6 +22,7 @@ import { AuthResponse } from './models/user.model';
       <nav class="nav-menu">
         <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">📊 Dashboard</a>
         <a routerLink="/customers" routerLinkActive="active" class="nav-link">Customers</a>
+        <a routerLink="/customer-devices" routerLinkActive="active" class="nav-link">⚙️ Devices</a>
         <a routerLink="/notifications" routerLinkActive="active" class="nav-link">Notifications</a>
         <a routerLink="/events" routerLinkActive="active" class="nav-link">Events</a>
         <a routerLink="/messages" routerLinkActive="active" class="nav-link">Messages</a>
@@ -35,7 +36,7 @@ import { AuthResponse } from './models/user.model';
   `,
   styles: [`
     .app-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #da262d;
       padding: 20px;
       color: white;
       margin: -20px -20px 20px -20px;
@@ -71,7 +72,7 @@ import { AuthResponse } from './models/user.model';
     
     .nav-link.active {
       background: white;
-      color: #667eea;
+      color: #da262d;
     }
     .header-content {
       display: flex;
@@ -104,7 +105,7 @@ import { AuthResponse } from './models/user.model';
     
     .btn-logout:hover {
       background: white;
-      color: #667eea;
+      color: #da262d;
     }
     
     .container.no-header {

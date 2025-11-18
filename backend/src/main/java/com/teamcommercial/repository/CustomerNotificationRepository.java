@@ -35,5 +35,9 @@ public interface CustomerNotificationRepository extends JpaRepository<CustomerNo
     
     @Query("SELECT cn.startDate, COUNT(cn) FROM CustomerNotification cn WHERE cn.startDate BETWEEN :startDate AND :endDate GROUP BY cn.startDate ORDER BY cn.startDate")
     List<Object[]> countByDateGrouped(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    
+    // Find open notifications (where end_date is null) by serial
+    @Query("SELECT cn FROM CustomerNotification cn WHERE cn.serial = :serial AND cn.endDate IS NULL")
+    List<CustomerNotification> findOpenNotificationsBySerial(@Param("serial") String serial);
 }
 
