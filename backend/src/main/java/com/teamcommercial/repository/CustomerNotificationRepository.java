@@ -2,6 +2,8 @@ package com.teamcommercial.repository;
 
 import com.teamcommercial.entity.CustomerNotification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -27,5 +29,11 @@ public interface CustomerNotificationRepository extends JpaRepository<CustomerNo
     List<CustomerNotification> findByEndDateBefore(LocalDate date);
     
     List<CustomerNotification> findByCustomerIdAndNotified(String customerId, Boolean notified);
+    
+    // Dashboard queries
+    Long countByStartDateBetween(LocalDate startDate, LocalDate endDate);
+    
+    @Query("SELECT cn.startDate, COUNT(cn) FROM CustomerNotification cn WHERE cn.startDate BETWEEN :startDate AND :endDate GROUP BY cn.startDate ORDER BY cn.startDate")
+    List<Object[]> countByDateGrouped(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 }
 

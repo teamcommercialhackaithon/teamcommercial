@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <h1>📊 Dashboard</h1>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="periodSelect">Time Period:</label>
+      <select 
+        id="periodSelect" 
+        [(ngModel)]="selectedPeriod" 
+        (change)="onPeriodChange()"
+        class="filter-select">
+        <option *ngFor="let period of periods" [value]="period.value">
+          {{ period.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="graphTypeSelect">Graph Type:</label>
+      <select 
+        id="graphTypeSelect" 
+        [(ngModel)]="selectedGraphType" 
+        (change)="onGraphTypeChange()"
+        class="filter-select">
+        <option *ngFor="let type of graphTypes" [value]="type.value">
+          {{ type.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading dashboard data...</p>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    <p>⚠️ {{ error }}</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading && !error && dashboardStats" class="dashboard-content">
+    
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card events-card">
+        <div class="card-icon">📅</div>
+        <div class="card-content">
+          <h3>Total Events</h3>
+          <p class="card-value">{{ dashboardStats.totalEvents }}</p>
+        </div>
+      </div>
+
+      <div class="summary-card notifications-card">
+        <div class="card-icon">🔔</div>
+        <div class="card-content">
+          <h3>Total Notifications</h3>
+          <p class="card-value">{{ dashboardStats.totalNotifications }}</p>
+        </div>
+      </div>
+
+      <div class="summary-card types-card">
+        <div class="card-icon">📋</div>
+        <div class="card-content">
+          <h3>Event Types</h3>
+          <p class="card-value">{{ eventTypes.length }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Charts Section -->
+    <div class="charts-section">
+      <div class="chart-container">
+        <canvas #eventsChart></canvas>
+      </div>
+
+      <div class="chart-container">
+        <canvas #notificationsChart></canvas>
+      </div>
+
+      <div class="chart-container">
+        <canvas #eventTypeChart></canvas>
+      </div>
+    </div>
+
+    <!-- Individual Event Type Charts -->
+    <div *ngIf="eventTypes.length > 0" class="event-types-section">
+      <h2>📊 Events by Type</h2>
+      <div class="event-type-charts">
+        <div *ngFor="let type of eventTypes" class="event-type-chart-container">
+          <canvas [id]="'eventType_' + type.replace(/\\s+/g, '_')"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Data Message -->
+    <div *ngIf="eventTypes.length === 0" class="no-data">
+      <p>📭 No events found for the selected period.</p>
+    </div>
+  </div>
+</div>
+
