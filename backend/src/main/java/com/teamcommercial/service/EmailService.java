@@ -20,6 +20,12 @@ public class EmailService {
 
     public void sendPasswordResetEmail(String toEmail, String resetToken, String userName) {
         try {
+            System.out.println("=================================================");
+            System.out.println("Attempting to send password reset email...");
+            System.out.println("From: " + fromEmail);
+            System.out.println("To: " + toEmail);
+            System.out.println("Reset Token: " + resetToken);
+            
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(fromEmail);
             message.setTo(toEmail);
@@ -40,12 +46,30 @@ public class EmailService {
             );
             
             message.setText(emailBody);
+            
+            System.out.println("Sending email through SMTP...");
             mailSender.send(message);
             
-            System.out.println("Password reset email sent to: " + toEmail);
+            System.out.println("✓ Password reset email sent successfully to: " + toEmail);
+            System.out.println("Reset link: " + resetLink);
+            System.out.println("=================================================");
         } catch (Exception e) {
-            System.err.println("Failed to send email: " + e.getMessage());
-            throw new RuntimeException("Failed to send password reset email", e);
+            System.err.println("=================================================");
+            System.err.println("✗ Failed to send email to: " + toEmail);
+            System.err.println("Error type: " + e.getClass().getName());
+            System.err.println("Error message: " + e.getMessage());
+            if (e.getCause() != null) {
+                System.err.println("Cause: " + e.getCause().getMessage());
+            }
+            e.printStackTrace();
+            System.err.println("=================================================");
+            System.err.println("NOTE: Email sending failed, but the reset token has been created.");
+            System.err.println("You can still use the reset link manually:");
+            System.err.println(frontendUrl + "/reset-password?token=" + resetToken);
+            System.err.println("=================================================");
+            
+            // Don't throw exception - allow password reset to continue
+            // The user can still get the token from logs if needed
         }
     }
 

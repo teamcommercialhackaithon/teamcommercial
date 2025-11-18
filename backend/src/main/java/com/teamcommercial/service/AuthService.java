@@ -108,14 +108,14 @@ public class AuthService {
 
         userRepository.save(user);
 
-        // Send reset email
+        // Send reset email (will log the link in console if email fails)
         emailService.sendPasswordResetEmail(
                 user.getEmailId(),
                 resetToken,
                 user.getFirstName()
         );
 
-        return "Password reset link sent to your email";
+        return "Password reset link has been generated. Check your email or contact administrator for the reset link.";
     }
 
     public String resetPassword(ResetPasswordRequest request) {
