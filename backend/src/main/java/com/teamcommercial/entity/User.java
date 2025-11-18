@@ -34,7 +34,6 @@ public class User {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @NotBlank(message = "Password is required")
     @Column(name = "password", nullable = false)
     private String password;
 
