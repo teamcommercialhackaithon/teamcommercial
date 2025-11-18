@@ -21,7 +21,6 @@ import { AuthResponse } from './models/user.model';
       </div>
       <nav class="nav-menu">
         <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">📊 Dashboard</a>
-        <a routerLink="/products" routerLinkActive="active" class="nav-link">Products</a>
         <a routerLink="/customers" routerLinkActive="active" class="nav-link">Customers</a>
         <a routerLink="/notifications" routerLinkActive="active" class="nav-link">Notifications</a>
         <a routerLink="/events" routerLinkActive="active" class="nav-link">Events</a>
