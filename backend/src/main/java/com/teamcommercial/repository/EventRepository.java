@@ -32,6 +32,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     
     List<Event> findAllByOrderByDateDesc();
     
+    // Find unprocessed events
+    List<Event> findByProcessedFalse();
+    
+    List<Event> findByProcessed(Boolean processed);
+    
     // Dashboard queries
     Long countByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     

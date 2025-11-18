@@ -5,12 +5,22 @@
 
   <!-- Action Bar -->
   <div class="action-bar" *ngIf="!isCreating && !isEditing">
-    <div class="filter-group">
-      <label>Filter by Type:</label>
-      <select [(ngModel)]="filterType" class="filter-select">
-        <option value="all">All Events</option>
-        <option *ngFor="let type of getUniqueTypes()" [value]="type">{{ type }}</option>
-      </select>
+    <div class="filter-controls">
+      <div class="filter-group">
+        <label>Filter by Type:</label>
+        <select [(ngModel)]="filterType" class="filter-select">
+          <option value="all">All Events</option>
+          <option *ngFor="let type of getUniqueTypes()" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Filter by Status:</label>
+        <select [(ngModel)]="filterProcessed" class="filter-select">
+          <option value="all">All Status</option>
+          <option value="true">Processed</option>
+          <option value="false">Unprocessed</option>
+        </select>
+      </div>
     </div>
     <button class="btn btn-primary" (click)="showCreateForm()">+ Add New Event</button>
   </div>
@@ -132,6 +142,9 @@
           </span>
           <span class="event-date">{{ event.date | date:'short' }}</span>
         </div>
+        <span class="processed-badge" [class.processed]="event.processed" [class.unprocessed]="!event.processed">
+          {{ event.processed ? '✓ Processed' : '⏳ Pending' }}
+        </span>
       </div>
 
       <div class="event-details">

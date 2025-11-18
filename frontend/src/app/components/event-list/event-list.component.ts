@@ -20,6 +20,7 @@ export class EventListComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   filterType: string = 'all';
+  filterProcessed: string = 'all';
   viewPayload: string | null = null;
 
   newEvent: Event = {
@@ -28,7 +29,8 @@ export class EventListComponent implements OnInit {
     serial: '',
     message: '',
     date: '',
-    payload: ''
+    payload: '',
+    processed: false
   };
 
   constructor(private eventService: EventService) { }
@@ -54,10 +56,20 @@ export class EventListComponent implements OnInit {
   }
 
   getFilteredEvents(): Event[] {
-    if (this.filterType === 'all' || this.filterType === '') {
-      return this.events;
+    let filtered = this.events;
+    
+    // Filter by type
+    if (this.filterType !== 'all' && this.filterType !== '') {
+      filtered = filtered.filter(e => e.type === this.filterType);
     }
-    return this.events.filter(e => e.type === this.filterType);
+    
+    // Filter by processed status
+    if (this.filterProcessed !== 'all') {
+      const isProcessed = this.filterProcessed === 'true';
+      filtered = filtered.filter(e => e.processed === isProcessed);
+    }
+    
+    return filtered;
   }
 
   getUniqueTypes(): string[] {
@@ -79,7 +91,8 @@ export class EventListComponent implements OnInit {
       serial: '',
       message: '',
       date: localDateTime,
-      payload: ''
+      payload: '',
+      processed: false
     };
     this.clearMessages();
   }

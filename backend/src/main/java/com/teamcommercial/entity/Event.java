@@ -39,6 +39,9 @@ public class Event {
     @Column(name = "payload", columnDefinition = "BYTEA")
     private byte[] payload;
 
+    @Column(name = "processed")
+    private Boolean processed = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -51,6 +54,9 @@ public class Event {
         updatedAt = LocalDateTime.now();
         if (date == null) {
             date = LocalDateTime.now();
+        }
+        if (processed == null) {
+            processed = false;
         }
     }
 

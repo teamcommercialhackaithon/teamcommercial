@@ -18,6 +18,7 @@ public class EventDTO {
     private String message;
     private LocalDateTime date;
     private String payload; // JSON string payload (stored as BLOB in database)
+    private Boolean processed;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

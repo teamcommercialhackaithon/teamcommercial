@@ -19,7 +19,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findByState(String state);
     
     List<Customer> findByCommunicationPreference(String communicationPreference);
-    
-    Optional<Customer> findBySerial(String serial);
 }
 

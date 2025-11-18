@@ -89,44 +89,41 @@ public class EventService {
             
             // If no open notification exists, create a new one
             if (openNotifications.isEmpty()) {
-                // Find customer by serial
-                Optional<Customer> customerOpt = customerRepository.findBySerial(savedEvent.getSerial());
+                // Find customer_device by serial first to get customer_id
+                List<CustomerDevice> devices = customerDeviceRepository.findBySerial(savedEvent.getSerial());
                 
-                if (customerOpt.isPresent()) {
-                    Customer customer = customerOpt.get();
+                if (!devices.isEmpty()) {
+                    CustomerDevice device = devices.get(0); // Get first matching device
                     
-                    // Create new customer notification
-                    CustomerNotification notification = new CustomerNotification();
-                    notification.setCustomerId(customer.getCustomerId().toString());
-                    notification.setSerial(savedEvent.getSerial());
-                    notification.setMacAddress(savedEvent.getMacAddress());
-                    notification.setType(savedEvent.getType());
-                    notification.setStartDate(LocalDate.now());
-                    notification.setEndDate(null); // Open notification
-                    notification.setNotified(false);
+                    // Now find customer by customer_id from the device
+                    Optional<Customer> customerOpt = customerRepository.findById(Long.parseLong(device.getCustomerId()));
                     
-                    customerNotificationRepository.save(notification);
-                    
-                    System.out.println("=================================================");
-                    System.out.println("✓ Created customer notification for event:");
-                    System.out.println("Event ID: " + savedEvent.getEventId());
-                    System.out.println("Event Type: " + savedEvent.getType());
-                    System.out.println("Serial: " + savedEvent.getSerial());
-                    System.out.println("Customer ID: " + customer.getCustomerId());
-                    System.out.println("Customer Name: " + customer.getCustomerName());
-                    System.out.println("=================================================");
-                    
-                    // Check customer_device table for matching serial and customer_id
-                    List<CustomerDevice> devices = customerDeviceRepository.findBySerial(savedEvent.getSerial());
-                    if (!devices.isEmpty()) {
-                        // Find device that matches both serial and customer_id
-                        CustomerDevice matchingDevice = null;
-                        for (CustomerDevice device : devices) {
-                            if (device.getCustomerId().equals(customer.getCustomerId().toString())) {
-                                matchingDevice = device;
-                                break;
-                            }
-                        }
+                    if (customerOpt.isPresent()) {
+                        Customer customer = customerOpt.get();
+                        
+                        // Create new customer notification
+                        CustomerNotification notification = new CustomerNotification();
+                        notification.setCustomerId(customer.getCustomerId().toString());
+                        notification.setSerial(savedEvent.getSerial());
+                        notification.setMacAddress(savedEvent.getMacAddress());
+                        notification.setType(savedEvent.getType());
+                        notification.setStartDate(LocalDate.now());
+                        notification.setEndDate(null); // Open notification
+                        notification.setNotified(false);
+                        
+                        customerNotificationRepository.save(notification);
+                        
+                        System.out.println("=================================================");
+                        System.out.println("✓ Created customer notification for event:");
+                        System.out.println("Event ID: " + savedEvent.getEventId());
+                        System.out.println("Event Type: " + savedEvent.getType());
+                        System.out.println("Serial: " + savedEvent.getSerial());
+                        System.out.println("Customer ID: " + customer.getCustomerId());
+                        System.out.println("Customer Name: " + customer.getCustomerName());
+                        System.out.println("=================================================");
+                        
+                        // Use the device we already found for email notification
+                        CustomerDevice matchingDevice = device;
                         
                         if (matchingDevice != null) {
                             System.out.println("ℹ Found matching device - Serial: " + matchingDevice.getSerial() + 
@@ -178,16 +175,16 @@ public class EventService {
                             } else {
                                 System.out.println("ℹ Device controller_device is empty/null, skipping email notification");
                             }
-                        } else {
-                            System.out.println("⚠ No customer device found matching serial: " + savedEvent.getSerial() + 
-                                             " and customer_id: " + customer.getCustomerId());
                         }
                     } else {
-                        System.out.println("⚠ No customer device found with serial: " + savedEvent.getSerial());
+                        System.out.println("=================================================");
+                        System.out.println("⚠ No customer found with customer_id: " + device.getCustomerId());
+                        System.out.println("Cannot create customer notification for event ID: " + savedEvent.getEventId());
+                        System.out.println("=================================================");
                     }
                 } else {
                     System.out.println("=================================================");
-                    System.out.println("⚠ No customer found with serial: " + savedEvent.getSerial());
+                    System.out.println("⚠ No customer device found with serial: " + savedEvent.getSerial());
                     System.out.println("Cannot create customer notification for event ID: " + savedEvent.getEventId());
                     System.out.println("=================================================");
                 }
@@ -226,23 +223,18 @@ public class EventService {
                     System.out.println("End Date: " + notification.getEndDate());
                     System.out.println("=================================================");
                     
-                    // Check customer_device table for matching serial and customer_id
-                    // First, get customer by serial to match customer_id
-                    Optional<Customer> customerOpt = customerRepository.findBySerial(savedEvent.getSerial());
-                    if (customerOpt.isPresent()) {
-                        Customer customer = customerOpt.get();
+                    // Find customer_device by serial first to get customer_id
+                    List<CustomerDevice> devices = customerDeviceRepository.findBySerial(savedEvent.getSerial());
+                    if (!devices.isEmpty()) {
+                        CustomerDevice device = devices.get(0); // Get first matching device
                         
-                        // Find customer_device matching both serial and customer_id
-                        List<CustomerDevice> devices = customerDeviceRepository.findBySerial(savedEvent.getSerial());
-                        if (!devices.isEmpty()) {
-                            // Find device that matches both serial and customer_id
-                            CustomerDevice matchingDevice = null;
-                            for (CustomerDevice device : devices) {
-                                if (device.getCustomerId().equals(customer.getCustomerId().toString())) {
-                                    matchingDevice = device;
-                                    break;
-                                }
-                            }
+                        // Now find customer by customer_id from the device
+                        Optional<Customer> customerOpt = customerRepository.findById(Long.parseLong(device.getCustomerId()));
+                        if (customerOpt.isPresent()) {
+                            Customer customer = customerOpt.get();
+                            
+                            // Use the device we already found
+                            CustomerDevice matchingDevice = device;
                             
                             if (matchingDevice != null) {
                                 System.out.println("ℹ Found matching device - Serial: " + matchingDevice.getSerial() + 
@@ -259,9 +251,10 @@ public class EventService {
                                     System.out.println("ℹ Looking for message type: " + messageType + 
                                                      " (Controller Device: " + matchingDevice.getControllerDevice() + ")");
                                     
-                                    List<Message> messages = messageRepository.findByControlerDeviceAndMessageType(
+                                    List<Message> messages = messageRepository.findFirstByControlerDeviceAndMessageTypeContaining(
                                         matchingDevice.getControllerDevice(), 
-                                        messageType
+                                        messageType,
+                                        PageRequest.of(0, 1)
                                     );
                                     
                                     if (!messages.isEmpty()) {
@@ -290,15 +283,12 @@ public class EventService {
                                 } else {
                                     System.out.println("ℹ Device controller_device is empty/null, skipping email notification");
                                 }
-                            } else {
-                                System.out.println("⚠ No customer device found matching serial: " + savedEvent.getSerial() + 
-                                                 " and customer_id: " + customer.getCustomerId());
                             }
                         } else {
-                            System.out.println("⚠ No customer device found with serial: " + savedEvent.getSerial());
+                            System.out.println("⚠ No customer found with customer_id: " + device.getCustomerId());
                         }
                     } else {
-                        System.out.println("⚠ No customer found with serial: " + savedEvent.getSerial());
+                        System.out.println("⚠ No customer device found with serial: " + savedEvent.getSerial());
                     }
                 }
             } else {
@@ -322,6 +312,7 @@ public class EventService {
         event.setMessage(eventDetails.getMessage());
         event.setDate(eventDetails.getDate());
         event.setPayload(eventDetails.getPayload());
+        event.setProcessed(eventDetails.getProcessed());
         
         return eventRepository.save(event);
     }

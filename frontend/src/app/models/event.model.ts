@@ -6,6 +6,7 @@ export interface Event {
   message?: string;
   date: string;
   payload?: string; // JSON string payload (stored as BLOB in database)
+  processed?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

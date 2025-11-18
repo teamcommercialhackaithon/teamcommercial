@@ -11,7 +11,10 @@ import { AuthResponse } from './models/user.model';
   template: `
     <div class="app-header" *ngIf="isLoggedIn">
       <div class="header-content">
-        <h1>Customer Active Monitoring</h1>
+        <div class="logo-section" style="padding-left: 20px;">
+          <img alt="Frontier Communications Logo" loading="eager" width="36" height="48" decoding="async" data-nimg="1" class="site-logo" style="color:transparent" srcset="https://tundra.frontier.redventures.io/migration/site-logo-rebrand.svg 1x" src="https://tundra.frontier.redventures.io/migration/site-logo-rebrand.svg">
+        </div>
+        <h1>Pulse Monitor</h1>
         <div class="user-info">
           <span class="user-name">👤 {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
           <button (click)="logout()" class="btn-logout" title="Logout">
@@ -79,6 +82,20 @@ import { AuthResponse } from './models/user.model';
       justify-content: space-between;
       align-items: center;
       margin-bottom: 15px;
+      position: relative;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    .header-logo {
+      height: 50px;
+      width: auto;
+      object-fit: contain;
+      filter: brightness(0) invert(1); /* Makes logo white */
     }
     
     .user-info {
@@ -117,6 +134,15 @@ import { AuthResponse } from './models/user.model';
       .header-content {
         flex-direction: column;
         gap: 10px;
+      }
+
+      .logo-section {
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+
+      .header-logo {
+        height: 40px;
       }
       
       .nav-menu {
