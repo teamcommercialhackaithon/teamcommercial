@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CustomerNotification } from '../models/customer-notification.model';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,11 @@ export class CustomerNotificationService {
 
   constructor(private http: HttpClient) { }
 
-  getAllNotifications(): Observable<CustomerNotification[]> {
-    return this.http.get<CustomerNotification[]>(this.apiUrl);
+  getAllNotifications(page: number = 0, size: number = 25): Observable<Page<CustomerNotification>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<CustomerNotification>>(this.apiUrl, { params });
   }
 
   getNotificationById(id: number): Observable<CustomerNotification> {

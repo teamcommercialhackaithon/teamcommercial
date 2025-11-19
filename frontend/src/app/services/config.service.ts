@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Config } from '../models/config.model';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,11 @@ export class ConfigService {
 
   constructor(private http: HttpClient) { }
 
-  getAllConfigs(): Observable<Config[]> {
-    return this.http.get<Config[]>(this.apiUrl);
+  getAllConfigs(page: number = 0, size: number = 25): Observable<Page<Config>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<Page<Config>>(this.apiUrl, { params });
   }
 
   getConfigById(id: number): Observable<Config> {

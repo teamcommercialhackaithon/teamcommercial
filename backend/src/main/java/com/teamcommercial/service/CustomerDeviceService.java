@@ -3,6 +3,8 @@ package com.teamcommercial.service;
 import com.teamcommercial.entity.CustomerDevice;
 import com.teamcommercial.repository.CustomerDeviceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,10 @@ public class CustomerDeviceService {
         this.customerDeviceRepository = customerDeviceRepository;
     }
 
+    public Page<CustomerDevice> getAllCustomerDevices(Pageable pageable) {
+        return customerDeviceRepository.findAll(pageable);
+    }
+    
     public List<CustomerDevice> getAllCustomerDevices() {
         return customerDeviceRepository.findAll();
     }

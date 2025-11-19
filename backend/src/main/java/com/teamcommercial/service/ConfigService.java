@@ -3,6 +3,8 @@ package com.teamcommercial.service;
 import com.teamcommercial.entity.Config;
 import com.teamcommercial.repository.ConfigRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,10 @@ public class ConfigService {
         this.configRepository = configRepository;
     }
 
+    public Page<Config> getAllConfigs(Pageable pageable) {
+        return configRepository.findAll(pageable);
+    }
+    
     public List<Config> getAllConfigs() {
         return configRepository.findAll();
     }

@@ -3,6 +3,8 @@ package com.teamcommercial.service;
 import com.teamcommercial.entity.CustomerNotification;
 import com.teamcommercial.repository.CustomerNotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,10 @@ public class CustomerNotificationService {
         this.notificationRepository = notificationRepository;
     }
 
+    public Page<CustomerNotification> getAllNotifications(Pageable pageable) {
+        return notificationRepository.findAll(pageable);
+    }
+    
     public List<CustomerNotification> getAllNotifications() {
         return notificationRepository.findAll();
     }

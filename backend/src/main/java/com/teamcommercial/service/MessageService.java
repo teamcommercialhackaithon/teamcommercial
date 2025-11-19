@@ -3,6 +3,8 @@ package com.teamcommercial.service;
 import com.teamcommercial.entity.Message;
 import com.teamcommercial.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,10 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    public Page<Message> getAllMessages(Pageable pageable) {
+        return messageRepository.findAll(pageable);
+    }
+    
     public List<Message> getAllMessages() {
         return messageRepository.findAllByOrderByCreatedAtDesc();
     }

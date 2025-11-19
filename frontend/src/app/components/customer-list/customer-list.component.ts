@@ -19,6 +19,13 @@ export class CustomerListComponent implements OnInit {
   loading = false;
   errorMessage = '';
   successMessage = '';
+  
+  // Pagination properties
+  currentPage = 0;
+  pageSize = 25;
+  totalPages = 0;
+  totalElements = 0;
+  Math = Math; // Expose Math to template
 
   newCustomer: Customer = {
     customerName: '',
@@ -44,9 +51,11 @@ export class CustomerListComponent implements OnInit {
   loadCustomers(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.customerService.getAllCustomers().subscribe({
+    this.customerService.getAllCustomers(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.customers = data;
+        this.customers = data.content;
+        this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements;
         this.loading = false;
       },
       error: (error) => {
@@ -55,6 +64,42 @@ export class CustomerListComponent implements OnInit {
         console.error('Error loading customers:', error);
       }
     });
+  }
+  
+  // Pagination methods
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadCustomers();
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadCustomers();
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadCustomers();
+    }
+  }
+  
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(0, this.currentPage - 2);
+    let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(0, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   showCreateForm(): void {
