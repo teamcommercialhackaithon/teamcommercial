@@ -22,6 +22,13 @@ export class EventListComponent implements OnInit {
   filterType: string = 'all';
   filterProcessed: string = 'all';
   viewPayload: string | null = null;
+  
+  // Pagination properties
+  currentPage = 0;
+  pageSize = 25;
+  totalPages = 0;
+  totalElements = 0;
+  Math = Math;
 
   newEvent: Event = {
     type: '',
@@ -42,9 +49,11 @@ export class EventListComponent implements OnInit {
   loadEvents(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.eventService.getAllEvents().subscribe({
+    this.eventService.getAllEvents(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.events = data;
+        this.events = data.content;
+        this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements;
         this.loading = false;
       },
       error: (error) => {
@@ -53,6 +62,42 @@ export class EventListComponent implements OnInit {
         console.error('Error loading events:', error);
       }
     });
+  }
+  
+  // Pagination methods
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadEvents();
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadEvents();
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadEvents();
+    }
+  }
+  
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(0, this.currentPage - 2);
+    let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(0, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   getFilteredEvents(): Event[] {

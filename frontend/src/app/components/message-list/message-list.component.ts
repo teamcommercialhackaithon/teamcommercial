@@ -21,6 +21,13 @@ export class MessageListComponent implements OnInit {
   successMessage = '';
   filterType: string = 'all';
   searchText: string = '';
+  
+  // Pagination properties
+  currentPage = 0;
+  pageSize = 25;
+  totalPages = 0;
+  totalElements = 0;
+  Math = Math;
 
   newMessage: Message = {
     messageType: '',
@@ -36,9 +43,11 @@ export class MessageListComponent implements OnInit {
   loadMessages(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.messageService.getAllMessages().subscribe({
+    this.messageService.getAllMessages(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.messages = data;
+        this.messages = data.content;
+        this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements;
         this.loading = false;
       },
       error: (error) => {
@@ -47,6 +56,42 @@ export class MessageListComponent implements OnInit {
         console.error('Error loading messages:', error);
       }
     });
+  }
+  
+  // Pagination methods
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadMessages();
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadMessages();
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadMessages();
+    }
+  }
+  
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(0, this.currentPage - 2);
+    let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(0, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   getFilteredMessages(): Message[] {
