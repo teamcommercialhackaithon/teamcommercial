@@ -20,6 +20,13 @@ export class NotificationListComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
   filterStatus: string = 'all';
+  
+  // Pagination properties
+  currentPage = 0;
+  pageSize = 25;
+  totalPages = 0;
+  totalElements = 0;
+  Math = Math;
 
   newNotification: CustomerNotification = {
     customerId: '',
@@ -41,9 +48,11 @@ export class NotificationListComponent implements OnInit {
   loadNotifications(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.notificationService.getAllNotifications().subscribe({
+    this.notificationService.getAllNotifications(this.currentPage, this.pageSize).subscribe({
       next: (data) => {
-        this.notifications = data;
+        this.notifications = data.content;
+        this.totalPages = data.totalPages;
+        this.totalElements = data.totalElements;
         this.loading = false;
       },
       error: (error) => {
@@ -52,6 +61,42 @@ export class NotificationListComponent implements OnInit {
         console.error('Error loading notifications:', error);
       }
     });
+  }
+  
+  // Pagination methods
+  goToPage(page: number): void {
+    this.currentPage = page;
+    this.loadNotifications();
+  }
+  
+  nextPage(): void {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.loadNotifications();
+    }
+  }
+  
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.loadNotifications();
+    }
+  }
+  
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(0, this.currentPage - 2);
+    let endPage = Math.min(this.totalPages - 1, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(0, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   getFilteredNotifications(): CustomerNotification[] {
