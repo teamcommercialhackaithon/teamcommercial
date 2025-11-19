@@ -102,7 +102,7 @@
   <div *ngIf="!loading && !isCreating && !isEditing" class="messages-grid">
     <div *ngFor="let message of getFilteredMessages()" class="card message-card">
       <div class="message-header">
-        <span *ngIf="message.messageType" class="type-badge" [class]="'type-' + message.messageType?.toLowerCase()">
+        <span *ngIf="message.messageType" class="type-badge" [class]="'type-' + message.messageType.toLowerCase()">
           {{ message.messageType }}
         </span>
         <span class="message-date">{{ message.createdAt | date:'short' }}</span>

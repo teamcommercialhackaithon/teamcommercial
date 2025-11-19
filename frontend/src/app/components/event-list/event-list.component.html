@@ -137,7 +137,7 @@
     <div *ngFor="let event of getFilteredEvents()" class="card event-card">
       <div class="event-header">
         <div class="event-title">
-          <span *ngIf="event.type" class="type-badge" [class]="'type-' + event.type?.toLowerCase()">
+          <span *ngIf="event.type" class="type-badge" [class]="'type-' + event.type.toLowerCase()">
             {{ event.type }}
           </span>
           <span class="event-date">{{ event.date | date:'short' }}</span>
