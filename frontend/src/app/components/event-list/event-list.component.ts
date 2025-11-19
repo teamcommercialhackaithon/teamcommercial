@@ -49,7 +49,16 @@ export class EventListComponent implements OnInit {
   loadEvents(): void {
     this.loading = true;
     this.errorMessage = '';
-    this.eventService.getAllEvents(this.currentPage, this.pageSize).subscribe({
+    
+    // Convert filter string to boolean for API
+    let processedFilter: boolean | undefined = undefined;
+    if (this.filterProcessed === 'true') {
+      processedFilter = true;
+    } else if (this.filterProcessed === 'false') {
+      processedFilter = false;
+    }
+    
+    this.eventService.getAllEvents(this.currentPage, this.pageSize, processedFilter).subscribe({
       next: (data) => {
         this.events = data.content;
         this.totalPages = data.totalPages;
@@ -62,6 +71,12 @@ export class EventListComponent implements OnInit {
         console.error('Error loading events:', error);
       }
     });
+  }
+  
+  // Method to handle filter changes
+  onFilterChange(): void {
+    this.currentPage = 0; // Reset to first page when filter changes
+    this.loadEvents();
   }
   
   // Pagination methods
@@ -103,15 +118,9 @@ export class EventListComponent implements OnInit {
   getFilteredEvents(): Event[] {
     let filtered = this.events;
     
-    // Filter by type
+    // Filter by type (client-side only, processed is done server-side)
     if (this.filterType !== 'all' && this.filterType !== '') {
       filtered = filtered.filter(e => e.type === this.filterType);
-    }
-    
-    // Filter by processed status
-    if (this.filterProcessed !== 'all') {
-      const isProcessed = this.filterProcessed === 'true';
-      filtered = filtered.filter(e => e.processed === isProcessed);
     }
     
     return filtered;

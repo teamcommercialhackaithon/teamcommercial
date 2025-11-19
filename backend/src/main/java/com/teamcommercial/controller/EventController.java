@@ -34,9 +34,10 @@ public class EventController {
     public ResponseEntity<Page<EventDTO>> getAllEvents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "25") int size,
-            @RequestParam(defaultValue = "eventId") String sortBy) {
+            @RequestParam(defaultValue = "eventId") String sortBy,
+            @RequestParam(required = false) Boolean processed) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
-        Page<Event> events = eventService.getAllEvents(pageable);
+        Page<Event> events = eventService.getAllEvents(pageable, processed);
         Page<EventDTO> eventDTOs = events.map(this::convertToDTO);
         return ResponseEntity.ok(eventDTOs);
     }
@@ -137,6 +138,7 @@ public class EventController {
         dto.setMessage(event.getMessage());
         dto.setDate(event.getDate());
         dto.setPayloadFromBytes(event.getPayload());
+        dto.setProcessed(event.getProcessed());
         dto.setCreatedAt(event.getCreatedAt());
         dto.setUpdatedAt(event.getUpdatedAt());
         return dto;
@@ -151,6 +153,7 @@ public class EventController {
         event.setMessage(dto.getMessage());
         event.setDate(dto.getDate());
         event.setPayload(dto.getPayloadAsBytes());
+        event.setProcessed(dto.getProcessed());
         return event;
     }
 }

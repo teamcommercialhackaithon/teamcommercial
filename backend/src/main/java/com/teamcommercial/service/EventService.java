@@ -48,8 +48,17 @@ public class EventService {
         this.emailService = emailService;
     }
 
-    public Page<Event> getAllEvents(Pageable pageable) {
-        return eventRepository.findAll(pageable);
+    public Page<Event> getAllEvents(Pageable pageable, Boolean processed) {
+        if (processed == null) {
+            return eventRepository.findAll(pageable);
+        }
+        // Use the existing findByProcessed method and convert to Page
+        List<Event> events = eventRepository.findByProcessed(processed);
+        // Since we have a list, we need to manually paginate
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), events.size());
+        List<Event> pageContent = events.subList(start, end);
+        return new org.springframework.data.domain.PageImpl<>(pageContent, pageable, events.size());
     }
     
     public List<Event> getAllEvents() {

@@ -15,7 +15,7 @@
       </div>
       <div class="filter-group">
         <label>Filter by Status:</label>
-        <select [(ngModel)]="filterProcessed" class="filter-select">
+        <select [(ngModel)]="filterProcessed" (ngModelChange)="onFilterChange()" class="filter-select">
           <option value="all">All Status</option>
           <option value="true">Processed</option>
           <option value="false">Unprocessed</option>

@@ -12,10 +12,15 @@ export class EventService {
 
   constructor(private http: HttpClient) { }
 
-  getAllEvents(page: number = 0, size: number = 25): Observable<Page<Event>> {
-    const params = new HttpParams()
+  getAllEvents(page: number = 0, size: number = 25, processed?: boolean): Observable<Page<Event>> {
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
+    
+    if (processed !== undefined) {
+      params = params.set('processed', processed.toString());
+    }
+    
     return this.http.get<Page<Event>>(this.apiUrl, { params });
   }
 
