@@ -189,6 +189,27 @@
         </tr>
       </tbody>
     </table>
+    
+    <!-- Pagination Controls -->
+    <div *ngIf="!loading && !showForm && totalElements > 0" class="pagination">
+      <div class="pagination-info">
+        Showing {{ (currentPage * pageSize) + 1 }} to {{ Math.min((currentPage + 1) * pageSize, totalElements) }} of {{ totalElements }} users
+      </div>
+      <div class="pagination-controls">
+        <button class="btn btn-sm" (click)="previousPage()" [disabled]="currentPage === 0">
+          ◀ Previous
+        </button>
+        <button *ngFor="let page of getPageNumbers()" 
+                class="btn btn-sm" 
+                [class.active]="page === currentPage"
+                (click)="goToPage(page)">
+          {{ page + 1 }}
+        </button>
+        <button class="btn btn-sm" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">
+          Next ▶
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
