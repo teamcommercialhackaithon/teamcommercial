@@ -14,7 +14,7 @@ import { AuthResponse } from './models/user.model';
         <div class="logo-section" style="padding-left: 20px;">
           <img alt="Frontier Communications Logo" loading="eager" width="36" height="48" decoding="async" data-nimg="1" class="site-logo" style="color:transparent" srcset="https://tundra.frontier.redventures.io/migration/site-logo-rebrand.svg 1x" src="https://tundra.frontier.redventures.io/migration/site-logo-rebrand.svg">
         </div>
-        <h1>Pulse Monitor</h1>
+        <h1>Vigilant</h1>
         <div class="user-info">
           <span class="user-name">👤 {{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
           <button (click)="logout()" class="btn-logout" title="Logout">
